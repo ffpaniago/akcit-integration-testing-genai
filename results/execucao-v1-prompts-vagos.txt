@@ -1,0 +1,37 @@
+FAIL generated/v1/checkout.contract.v1.spec.js
+  ● Test suite failed to run
+
+    Cannot find module '../services/paymentService' from 'generated/v1/checkout.contract.v1.spec.js'
+
+       6 | const Order = require('../models/Order');
+       7 |
+    >  8 | jest.mock('../services/paymentService');
+         |                                        ^
+       9 | jest.mock('../models/Order');
+      10 |
+      11 | describe('POST /api/v1/orders/checkout', () => {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (generated/v1/checkout.contract.v1.spec.js:8:40)
+
+FAIL generated/v1/checkout.faults.v1.spec.js
+  ● Test suite failed to run
+
+    Cannot find module '../app' from 'generated/v1/checkout.faults.v1.spec.js'
+
+      3 | const request = require('supertest');
+      4 | const nock = require('nock');
+    > 5 | const app = require('../app');
+        |             ^
+      6 |
+      7 | const GATEWAY_URL = 'https://api.paymentgateway.com';
+      8 |
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.require (generated/v1/checkout.faults.v1.spec.js:5:13)
+
+Test Suites: 2 failed, 2 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.5 s
+Ran all test suites.

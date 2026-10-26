@@ -1,0 +1,48 @@
+PASS tests/integration/checkout.faults.spec.js
+  Falhas na fronteira Checkout ↔ Gateway
+    Disponibilidade do gateway
+      ✓ CT-08: timeout do gateway → 504 e nada persistido (39 ms)
+      ✓ CT-09: conexão recusada (gateway fora do ar) → 502 e nada persistido (6 ms)
+      ✓ CT-10: gateway responde 500 → 502 e nada persistido (6 ms)
+      ✓ CT-10: gateway responde 503 → 502 e nada persistido (6 ms)
+    Autenticação nas duas fronteiras
+      ✓ CT-11: cliente sem header Authorization → 401 e o gateway NÃO é chamado (2 ms)
+      ✓ CT-11: cliente token inválido/expirado → 401 e o gateway NÃO é chamado (2 ms)
+      ✓ CT-12: esquema diferente de Bearer → 401 (1 ms)
+      ✓ CT-13: gateway rejeita NOSSAS credenciais (401 dele) → 502, não 401 ao cliente (5 ms)
+    Recusa de pagamento
+      ✓ CT-14: cartão recusado (402) → 422 com motivo e nada persistido (7 ms)
+      ✓ CT-15: recusa sinalizada no corpo (201 + status "declined") → 422 (4 ms)
+    Validação de payload (partições inválidas e valores-limite)
+      ✓ CT-16: qty = 0 → 400 e o gateway NÃO é chamado (2 ms)
+      ✓ CT-16: qty negativo → 400 e o gateway NÃO é chamado (2 ms)
+      ✓ CT-16: qty = 100 (acima do limite) → 400 e o gateway NÃO é chamado (1 ms)
+      ✓ CT-16: qty fracionário → 400 e o gateway NÃO é chamado (1 ms)
+      ✓ CT-16: qty como string → 400 e o gateway NÃO é chamado (1 ms)
+      ✓ CT-16: items vazio → 400 e o gateway NÃO é chamado (1 ms)
+      ✓ CT-16: userId vazio → 400 e o gateway NÃO é chamado (2 ms)
+      ✓ CT-16: paymentMethod desconhecido → 400 e o gateway NÃO é chamado (1 ms)
+      ✓ CT-17: produto inexistente no catálogo → 400 UNKNOWN_PRODUCT (2 ms)
+      ✓ CT-18: JSON malformado → 400 (1 ms)
+    Consistência após falha
+      ✓ CT-19: falha seguida de sucesso → apenas o pedido aprovado fica no banco (10 ms)
+      ✓ CT-20: pedido recusado não pode ser consultado depois → 404 (6 ms)
+
+PASS tests/integration/checkout.contract.spec.js
+  Contrato e fluxo feliz — POST /api/v1/orders/checkout
+    ✓ CT-01: retorna 201 com o contrato completo da resposta (8 ms)
+    ✓ CT-02: envia ao gateway o contrato esperado (corpo e Bearer token) (5 ms)
+    ✓ CT-03: persiste pedido, itens e pagamento no banco (5 ms)
+    ✓ CT-04: calcula o total com vários itens usando o preço do banco, não do cliente (5 ms)
+    ✓ CT-05: aceita valores-limite válidos de quantidade (limite inferior qty=1) (4 ms)
+    ✓ CT-05: aceita valores-limite válidos de quantidade (limite superior qty=99) (5 ms)
+    ✓ CT-06: GET /orders/:id devolve o pedido persistido pelo checkout (ida e volta) (6 ms)
+    ✓ CT-07: dois checkouts geram pedidos distintos e independentes (5 ms)
+
+Test Suites: 2 passed, 2 total
+Tests:       30 passed, 30 total
+Snapshots:   0 total
+Time:        0.719 s, estimated 1 s
+Ran all test suites.
+Test results written to: results/resultados.json
+
